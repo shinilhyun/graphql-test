@@ -5,11 +5,11 @@ import io.leangen.graphql.annotations.GraphQLMutation;
 import io.leangen.graphql.annotations.GraphQLQuery;
 import io.leangen.graphql.spqr.spring.annotations.GraphQLApi;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.http.ResponseEntity;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
-import shin.aiden.graphqltest.CustomGraphQLException;
 import shin.aiden.graphqltest.appversion.dto.AppVersionResponse;
 import shin.aiden.graphqltest.appversion.dto.AppVersionSaveRequest;
 
@@ -22,9 +22,12 @@ import java.util.stream.Collectors;
 @GraphQLApi
 @RequiredArgsConstructor
 @Validated
+@Slf4j
 public class AppVersionResolver {
 
     private final AppVersionService appVersionService;
+
+    private final AppVersionRepository appVersionRepository;
 
     private final ModelMapper modelMapper;
 
@@ -44,6 +47,16 @@ public class AppVersionResolver {
                 .collect(Collectors.toList());
     }
 
+    @GraphQLQuery(name = "allAppVersionList")
+    public List<AppVersionResponse> allAppVersion() {
+
+        List<AppVersion> appVersionList = appVersionRepository.findAll();
+
+        return appVersionList.stream()
+                .map(appVersion -> modelMapper.map(appVersion, AppVersionResponse.class))
+                .collect(Collectors.toList());
+    }
+
     @GraphQLMutation(name = "saveAppVersion")
     public AppVersionResponse saveAppVersion(@GraphQLArgument(name = "save") @Valid AppVersionSaveRequest saveRequest) {
 
@@ -58,7 +71,9 @@ public class AppVersionResolver {
 
     @GraphQLMutation(name = "deleteAppVersion")
     public String deleteAppVersion(@GraphQLArgument(name = "id") int popupSeq) {
+
         appVersionService.delete(popupSeq);
+
         return "삭제완료";
     }
 }

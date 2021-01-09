@@ -1,4 +1,4 @@
-package shin.aiden.graphqltest;
+package shin.aiden.graphqltest.exception;
 
 import graphql.ErrorType;
 import graphql.GraphQLError;
@@ -9,17 +9,25 @@ import java.util.Map;
 
 public class CustomGraphQLException extends RuntimeException implements GraphQLError {
     private final int errorCode;
+    private String message;
 
-    public CustomGraphQLException(int errorCode, String errorMessage) {
-        super(errorMessage);
-        this.errorCode = errorCode;
+    public CustomGraphQLException(ExceptionType exceptionType) {
+        super(exceptionType.getMessage());
+        this.errorCode = exceptionType.getCode();
+        this.message = exceptionType.getMessage();
+    }
+
+    public CustomGraphQLException(ExceptionType exceptionType, Throwable cause) {
+        super(cause.getMessage(), cause);
+        this.errorCode = exceptionType.getCode();
+        this.message = exceptionType.getMessage();
     }
 
     @Override
     public Map<String, Object> getExtensions() {
         Map<String, Object> customAttributes = new LinkedHashMap<>();
         customAttributes.put("errorCode", this.errorCode);
-        customAttributes.put("errorMessage", this.getMessage());
+        customAttributes.put("errorMessage", message);
         return customAttributes;
     }
 
