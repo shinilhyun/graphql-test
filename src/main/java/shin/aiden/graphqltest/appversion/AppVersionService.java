@@ -2,6 +2,7 @@ package shin.aiden.graphqltest.appversion;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import shin.aiden.graphqltest.CustomGraphQLException;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -24,5 +25,9 @@ public class AppVersionService {
 
     public AppVersion save(AppVersion appVersion) {
         return appVersionRepository.save(appVersion);
+    }
+
+    public void delete(int popupSeq) {
+        appVersionRepository.deleteById(popupSeq);
     }
 }
