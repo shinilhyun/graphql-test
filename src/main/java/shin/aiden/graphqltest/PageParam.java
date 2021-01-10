@@ -6,6 +6,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @GraphQLType
 public class PageParam {
 
@@ -32,32 +35,24 @@ public class PageParam {
 
     private Sort getSort() {
 
+        List<Sort.Order> orderList = new ArrayList<>();
         if (sort == null || sort[0] == null) {
             return null;
         }
 
-        String[] st = sort[0].split(",");
-
-        Sort sortList;
-        if (st.length == 1) {
-            sortList = Sort.by(st[0]);
-        } else {
-            sortList = Sort.by(Sort.Direction.fromString(st[1]), st[0]);
-        }
-
-
         for (int i = 0; i < sort.length; i++) {
 
-            if (sort[i] != null && i != 0) {
+            if (sort[i] != null) {
                 String[] split = sort[i].split(",");
 
                 if (split.length == 1) {
-                    sortList.and(Sort.by(split[0]));
+                    orderList.add(Sort.Order.by(split[0]));
                 } else {
-                    sortList.and(Sort.by(Sort.Direction.fromString(split[1]), split[0]));
+                    orderList.add(new Sort.Order(Sort.Direction.valueOf(split[1].toUpperCase()), split[0]));
                 }
             }
         }
-        return sortList;
+
+        return Sort.by(orderList);
     }
 }
