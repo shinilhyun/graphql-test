@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 @GraphQLType
-public class PageInfo {
+public class PageParam {
 
     @GraphQLInputField(name = "size", defaultValue = "10")
     private int size;
@@ -32,15 +32,23 @@ public class PageInfo {
 
     private Sort getSort() {
 
-        if (sort == null) {
+        if (sort == null || sort[0] == null) {
             return null;
         }
 
-        Sort sortList = Sort.unsorted();
+        String[] st = sort[0].split(",");
+
+        Sort sortList;
+        if (st.length == 1) {
+            sortList = Sort.by(st[0]);
+        } else {
+            sortList = Sort.by(Sort.Direction.fromString(st[1]), st[0]);
+        }
+
 
         for (int i = 0; i < sort.length; i++) {
 
-            if (sort[i] != null) {
+            if (sort[i] != null && i != 0) {
                 String[] split = sort[i].split(",");
 
                 if (split.length == 1) {

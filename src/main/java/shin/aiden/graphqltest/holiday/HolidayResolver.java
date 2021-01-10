@@ -2,18 +2,14 @@ package shin.aiden.graphqltest.holiday;
 
 import graphql.relay.Connection;
 import graphql.relay.Edge;
-import io.leangen.graphql.annotations.GraphQLArgument;
 import io.leangen.graphql.annotations.GraphQLNonNull;
 import io.leangen.graphql.annotations.GraphQLQuery;
 import io.leangen.graphql.spqr.spring.annotations.GraphQLApi;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
-import shin.aiden.graphqltest.PageInfo;
+import shin.aiden.graphqltest.PageParam;
 import shin.aiden.graphqltest.holiday.dto.HolidayResponse;
 import shin.aiden.graphqltest.utils.PageUtil;
 
@@ -53,9 +49,9 @@ public class HolidayResolver {
     }
 
     @GraphQLQuery(name = "holidayPage2")
-    public Page<HolidayResponse> holidayPage(PageInfo pageInfo) {
+    public Page<HolidayResponse> holidayPage(PageParam pageParam) {
 
-        Page<HolidayResponse> map = holidayRepository.findAll(pageInfo.getPageable())
+        Page<HolidayResponse> map = holidayRepository.findAll(pageParam.getPageable())
                 .map(holiday -> modelMapper.map(holiday, HolidayResponse.class));
         System.out.println(map);
         return map;
