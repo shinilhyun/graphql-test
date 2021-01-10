@@ -23,6 +23,8 @@ public class HolidayResolver {
 
     private final HolidayRepository holidayRepository;
 
+    private final HolidayQueryRepository holidayQueryRepository;
+
     private final PageUtil cursorUtil;
 
     private final ModelMapper modelMapper;
@@ -53,8 +55,15 @@ public class HolidayResolver {
 
         Page<HolidayResponse> map = holidayRepository.findAll(pageParam.getPageable())
                 .map(holiday -> modelMapper.map(holiday, HolidayResponse.class));
-        System.out.println(map);
+
         return map;
+    }
+
+    @GraphQLQuery(name = "holidayPage3")
+    public Page<HolidayResponse> holidayPage3(PageParam pageParam) {
+
+        return holidayQueryRepository.getAllHolidayPage(pageParam.getPageable())
+                .map(holiday -> modelMapper.map(holiday, HolidayResponse.class));
     }
 
 }
