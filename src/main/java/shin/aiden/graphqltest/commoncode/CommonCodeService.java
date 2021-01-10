@@ -3,7 +3,7 @@ package shin.aiden.graphqltest.commoncode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import shin.aiden.graphqltest.CursorUtil;
+import shin.aiden.graphqltest.utils.PageUtil;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ public class CommonCodeService {
 
     private final CommonCodeRepository commonCodeRepository;
 
-    private final CursorUtil cursorUtil;
+    private final PageUtil pageUtil;
 
     public List<CommonCode> getAllCommonCodePage(String cursor) {
 

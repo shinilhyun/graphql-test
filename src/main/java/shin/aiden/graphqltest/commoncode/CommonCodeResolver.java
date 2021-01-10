@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
-import shin.aiden.graphqltest.CursorUtil;
+import shin.aiden.graphqltest.utils.PageUtil;
 import shin.aiden.graphqltest.commoncode.dto.CommonCodeResponse;
 
 import java.util.List;
@@ -24,7 +24,7 @@ public class CommonCodeResolver {
 
     private final CommonCodeService commonCodeService;
 
-    private final CursorUtil cursorUtil;
+    private final PageUtil pageUtil;
 
     private final ModelMapper modelMapper;
 
@@ -48,12 +48,7 @@ public class CommonCodeResolver {
                 .limit(first)
                 .collect(Collectors.toList());
 
-        PageInfo pageInfo = new DefaultPageInfo(cursorUtil.getFirstCursorFrom(edges),
-                cursorUtil.getLastCursorFrom(edges),
-                cursor != null,
-                edges.size() >= first);
-
-         return new DefaultConnection<>(edges, pageInfo);
+        return pageUtil.connection(edges, first, cursor);
     }
 
 }
